@@ -1,0 +1,145 @@
+#include <iostream>
+
+using namespace std;
+
+template <class T>
+class node{
+public:
+	T item;
+	node<T> *next;
+	node();
+	node(T);
+};
+template <class T>
+node<T>::node(){
+	next = NULL;
+}
+template <class T>
+node<T>::node(T i){
+	item = i;
+	next = NULL;
+}
+template <class T>
+class stackList {
+private:
+    node<T>* top;
+    int size;
+    void reverse(node<T>*);
+public:
+    stackList();
+    void display();
+    void push(T);
+    bool pop();
+    T peek();
+    ~stackList();
+    stackList(const stackList&);
+};
+template <class T>
+stackList<T>::stackList() {
+     top = NULL;
+     size = 0;
+ }
+
+template <class T>
+stackList<T>::~stackList() {
+    while(size!=0) {
+        pop();
+    }
+}   
+    
+template <class T>
+void stackList<T>::push(T item){
+    node<T>* temp = new node<T>(item);
+    if (size == 0) {
+        top = temp;
+    }
+    else {
+        temp->next = top;
+        top = temp;
+    }
+    size++;
+}
+
+template <class T>
+bool stackList<T>::pop(){
+    if (size != 0) {
+        node<T>* del = new node<T>();
+        del = top;
+        top = del->next;
+        del->next = NULL;
+        delete del;
+        size--;
+        return true;
+    }
+    return false;
+}
+
+template <class T>
+stackList<T>::stackList(const stackList<T>& l){
+    size = 0;
+    top = NULL;
+    //initialize
+    node<T>* tmp = l.top;
+    reverse(tmp);
+}
+
+template <class T>
+void stackList<T>::reverse(node<T> *front){
+    if(front != NULL){
+        reverse(front->next);
+        push(front->item);
+    }
+}
+
+
+template <class T>
+void stackList<T>::display(){
+    node<T>* temp = top;
+    while (temp!= NULL) {
+        cout << temp->item << " ";
+        temp = temp-> next;
+    }
+    cout<< endl;
+}
+
+template <class T>
+T stackList<T>::peek(){
+    if (size == 0) {
+        throw 404;
+    }
+    return top->item;
+}
+
+int main() {
+    int cases;
+    cin >> cases;
+    stackList<int> l;
+    while (cases != 0) {
+        int type;
+        cin >> type;
+        if (type == 1) {
+            int item;
+            cin >> item;
+            l.push(item);
+            l.display();
+        }
+        else if (type == 2) {
+            l.pop();
+            l.display();
+        }
+
+        else if (type == 3) {
+            try {
+                cout<<l.peek()<<endl;
+            } catch (int err) {
+                if (err == 404) {
+                    cout << "stack is empty."<<endl;
+                }
+            }
+        }
+        else{
+            l.display();
+        }
+        cases--;
+    }
+}
